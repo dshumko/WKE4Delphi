@@ -1,0 +1,42 @@
+package WkeForDelphi;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'WKE FOR DELPHI BY LANGJI'}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl;
+
+contains
+  Langji.Wke.Reg in 'src\Langji.Wke.Reg.pas',
+  Langji.Wke.types in 'src\Langji.Wke.types.pas',
+  Langji.Wke.lib in 'src\Langji.Wke.lib.pas',
+  Langji.Wke.CoreInterface in 'src\Langji.Wke.CoreInterface.pas',
+  Langji.Wke.WebCore in 'src\Langji.Wke.WebCore.pas',
+  Langji.Wke.CustomPage in 'src\Langji.Wke.CustomPage.pas',
+  Langji.Wke.Webbrowser in 'src\Langji.Wke.Webbrowser.pas',
+  Langji.Wke.App in 'src\Langji.Wke.App.pas';
+
+end.
