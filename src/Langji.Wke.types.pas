@@ -11,26 +11,26 @@ const
   // wkeMouseFlags
   WKE_LBUTTON = $01;
   WKE_RBUTTON = $02;
-  WKE_SHIFT   = $04;
+  WKE_SHIFT = $04;
   WKE_CONTROL = $08;
   WKE_MBUTTON = $10;
 
   // wkeKeyFlags
   WKE_EXTENDED = $0100;
-  WKE_REPEAT   = $4000;
+  WKE_REPEAT = $4000;
 
   // wkeMouseMsg
-  WKE_MSG_MOUSEMOVE     = $0200;
-  WKE_MSG_LBUTTONDOWN   = $0201;
-  WKE_MSG_LBUTTONUP     = $0202;
+  WKE_MSG_MOUSEMOVE = $0200;
+  WKE_MSG_LBUTTONDOWN = $0201;
+  WKE_MSG_LBUTTONUP = $0202;
   WKE_MSG_LBUTTONDBLCLK = $0203;
-  WKE_MSG_RBUTTONDOWN   = $0204;
-  WKE_MSG_RBUTTONUP     = $0205;
+  WKE_MSG_RBUTTONDOWN = $0204;
+  WKE_MSG_RBUTTONUP = $0205;
   WKE_MSG_RBUTTONDBLCLK = $0206;
-  WKE_MSG_MBUTTONDOWN   = $0207;
-  WKE_MSG_MBUTTONUP     = $0208;
+  WKE_MSG_MBUTTONDOWN = $0207;
+  WKE_MSG_MBUTTONUP = $0208;
   WKE_MSG_MBUTTONDBLCLK = $0209;
-  WKE_MSG_MOUSEWHEEL    = $020A;
+  WKE_MSG_MOUSEWHEEL = $020A;
 
   // WKE_SETTING_PAINTCALLBACK_IN_OTHER_THREAD=4;
 
@@ -110,6 +110,17 @@ type
   PwkeProxy = ^TwkeProxy;
 
   TwkeProxy = wkeProxy;
+
+  // typedef struct _wkeViewSettings {
+  // int size;
+  // unsigned int bgColor;
+  // } wkeViewSettings;
+  wkeViewSettings = packed record
+    size: Integer;
+    bgColor: Cardinal;
+  end;
+
+  TwkeViewSettings = wkeViewSettings;
 
   wkeSettings = packed record
     proxy: wkeProxy;
@@ -383,7 +394,7 @@ type
 
   TOnConfirmBoxEvent = procedure(Sender: TObject; sMsg: string; var bresult: Boolean) of object;
 
-  TOnPromptBoxEvent = procedure(Sender: TObject; sMsg: string;var sValue:string; var bresult: Boolean) of object;
+  TOnPromptBoxEvent = procedure(Sender: TObject; sMsg: string; var sValue: string; var bresult: Boolean) of object;
 
   TOnDownloadEvent = procedure(Sender: TObject; sUrl: string) of object;
 
@@ -391,7 +402,7 @@ type
 
   TOnLoadUrlEndEvent = procedure(Sender: TObject; sUrl: string; buf: Pointer; len: Integer) of object;
 
-  TOnLoadUrlBeginEvent  = procedure(Sender: TObject; sUrl: string; out bHook, bHandled: Boolean) of object;
+  TOnLoadUrlBeginEvent = procedure(Sender: TObject; sUrl: string; out bHook, bHandled: Boolean) of object;
   TOnWindowClosingEvent = procedure(Sender: TObject; var bAllowClose: Boolean) of object;
 
 implementation

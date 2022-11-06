@@ -7,7 +7,8 @@ uses
   Langji.Wke.CoreInterface, Langji.Wke.WebCore;
 
 type
-  TOnNewWindowEvent = procedure(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var openflg: TNewWindowFlag; var webbrow: IWkeCore) of object;
+  TOnNewWindowEvent = procedure(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
+    windowFeatures: PwkeWindowFeatures; var openflg: TNewWindowFlag; var webbrow: IWkeCore) of object;
 
   TWkeApp = class(TComponent)
   private
@@ -34,7 +35,8 @@ type
     procedure SetLocaStoragePath(const Value: string);
     procedure SetTouchEnabled(const Value: boolean);
     procedure SetUserAgent(const Value: string);
-    procedure DoAppCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
+    procedure DoAppCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
+      windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
   protected
     procedure loaded; override;
   public
@@ -42,7 +44,7 @@ type
     destructor Destroy; override;
     function CreateWebbrowser(Aparent: TWinControl): TWkeWebbrowser; overload;
     function CreateWebbrowser(Aparent: TWinControl; Ar: Trect): TWkeWebbrowser; overload;
-    procedure CloseWebbrowser(Abrowser: TWkeWebBrowser);
+    procedure CloseWebbrowser(Abrowser: TWkeWebbrowser);
   published
     property UserAgent: string read GetUserAgent write SetUserAgent;
     property CookieEnabled: boolean read GetCookieEnabled write SetCookieEnabled default true;
@@ -63,9 +65,9 @@ begin
   inherited;
   FUserAgent := wkeUserAgent;
   FCookieEnabled := true;
-  FCspEnabled := False;
+  FCspEnabled := false;
   FTouchEnabled := false;
-  FDragEnabled := False;
+  FDragEnabled := false;
   FLocalStoragePath := '';
   FCookiePath := '';
   FWebPages := TList{$IFDEF DELPHI15_UP}<IWkeCore>{$ENDIF}.Create;
@@ -78,7 +80,8 @@ begin
   inherited;
 end;
 
-procedure TWkeApp.DoAppCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
+procedure TWkeApp.DoAppCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
+  windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
 var
   Openflag: TNewWindowFlag;
   NewWebpage: IWkeCore;
@@ -116,19 +119,19 @@ end;
 
 function TWkeApp.CreateWebbrowser(Aparent: TWinControl): TWkeWebbrowser;
 var
-  r: TRect;
+  r: Trect;
 begin
   GetWindowRect(Aparent.Handle, r);
   result := CreateWebbrowser(Aparent, r);
-  Result.Align := alClient;
+  result.Align := alClient;
 end;
 
 function TWkeApp.CreateWebbrowser(Aparent: TWinControl; Ar: Trect): TWkeWebbrowser;
 var
   newpage: TWkeWebbrowser;
 begin
-  newpage := TWkeWebbrowser.create(Aparent);    
-  with   newpage do
+  newpage := TWkeWebbrowser.Create(Aparent);
+  with newpage do
   begin
     parent := Aparent;
     BoundsRect := Ar;
@@ -145,7 +148,7 @@ begin
   result := newpage;
 end;
 
-procedure TWkeApp.CloseWebbrowser(Abrowser: TWkeWebBrowser);
+procedure TWkeApp.CloseWebbrowser(Abrowser: TWkeWebbrowser);
 begin
   FWebPages.Remove(Abrowser);
   Abrowser.Free;
@@ -153,7 +156,7 @@ end;
 
 function TWkeApp.GetCookieDir: string;
 begin
-  Result := FCookiePath;
+  result := FCookiePath;
 end;
 
 function TWkeApp.GetCookieEnabled: boolean;
@@ -178,12 +181,12 @@ end;
 
 function TWkeApp.GetTouchEnabled: boolean;
 begin
-  Result := FTouchEnabled;
+  result := FTouchEnabled;
 end;
 
 function TWkeApp.GetUserAgent: string;
 begin
-  Result := FUserAgent;
+  result := FUserAgent;
 end;
 
 procedure TWkeApp.SetCookieDir(const Value: string);
@@ -222,4 +225,3 @@ begin
 end;
 
 end.
-

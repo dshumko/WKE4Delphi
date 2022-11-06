@@ -3,7 +3,8 @@ unit Langji.Wke.Webbrowser;
 interface
 
 uses
-  Windows, Messages, Controls, Classes, Langji.Wke.lib, Langji.Wke.types, Langji.Wke.CoreInterface, Langji.Wke.WebCore;
+  Windows, Messages, Controls, Classes, Langji.Wke.lib, Langji.Wke.types,
+  Langji.Wke.CoreInterface, Langji.Wke.WebCore;
 
 type
   TWkeWebbrowser = class(TWinControl, IWkeCore)
@@ -35,9 +36,9 @@ type
     function GetLocationUrl: string;
     function GetLoadFinished: boolean;
     function GetWebHandle: Hwnd;
-      /// <summary>
-      /// 格式为：PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
-      /// </summary>
+    /// <summary>
+    /// 格式为：PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
+    /// </summary>
     procedure SetCookie(const Value: string);
     function GetCookie: string;
     procedure SetLocaStoragePath(const Value: string);
@@ -69,18 +70,21 @@ type
     procedure SetCookieDir(const Value: string);
     procedure SetCookieEnabled(const Value: boolean);
     procedure SetHttpProxy(const Value: string);
-      // ----------------------
+    function getLanguage: string;
+    procedure setLanguage(const Value: string);
+    // ----------------------
     procedure DoWebTitleChange(Sender: TObject; sTitle: string);
     procedure DoWebUrlChange(Sender: TObject; sUrl: string);
     procedure DoWebBeforeLoad(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; var Cancel: boolean);
     procedure DoWebLoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
-    procedure DoWebCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
+    procedure DoWebCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
+      windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
     procedure DoWebWindowClosing(Sender: TObject; var bAllowClose: boolean);
     procedure DoWebWindowDestroy(Sender: TObject);
     procedure DoWebDocumentReady(Sender: TObject);
     procedure DoWebAlertBox(Sender: TObject; sMsg: string);
     procedure DoWebConfirmBox(Sender: TObject; sMsg: string; var bresult: boolean);
-    procedure DoWebPromptBox(Sender: TObject; sMsg: string;var sValue:string;  var bresult: boolean);
+    procedure DoWebPromptBox(Sender: TObject; sMsg: string; var sValue: string; var bresult: boolean);
     procedure DoWebDownloadFile(Sender: TObject; sUrl: string);
     procedure DoWebMouseOverUrlChaged(Sender: TObject; sUrl: string);
     procedure DoWebConsoleMessage(Sender: TObject; const sMsg, source: string; const sline: Integer);
@@ -120,6 +124,8 @@ type
     procedure SetOnUrlChange(const Value: TOnUrlChangeEvent);
     procedure SetOnWindowClosing(const Value: TOnWindowClosingEvent);
     procedure SetOnWindowDestroy(const Value: TNotifyEvent);
+    function GetHDPISuport: boolean;
+    procedure SetHDPISuport(const Value: boolean);
   protected
     procedure CreateWebView;
     procedure CloseWebView;
@@ -128,6 +134,8 @@ type
     procedure CreateWindowHandle(const Params: TCreateParams); override;
     procedure WndProc(var msg: TMessage); override;
     procedure WM_SIZE(var msg: TMessage); message WM_SIZE;
+    procedure VisitAllCookies;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -135,59 +143,59 @@ type
     procedure GoForward;
     procedure Refresh;
     procedure Stop;
-    procedure PostUrl(const Aurl: string; const ApostData : String);
-    procedure LoadUrl(const Aurl: string);
-      /// <summary>
-      /// 加载HTMLCODE
-      /// </summary>
+    procedure PostUrl(const Aurl: string; const ApostData: string);
+    procedure LoadUrl(const Aurl: string);
+    /// <summary>
+    /// 加载HTMLCODE
+    /// </summary>
     procedure LoadHtml(const Astr: string);
-      /// <summary>
-      /// 加载文件
-      /// </summary>
+    /// <summary>
+    /// 加载文件
+    /// </summary>
     procedure LoadFile(const AFile: string);
-      /// <summary>
-      /// 执行js 返回值 为执行成功与否
-      /// </summary>
+    /// <summary>
+    /// 执行js 返回值 为执行成功与否
+    /// </summary>
     function ExecuteJavascript(const js: string): boolean; overload;
     function ExecuteJavascript(const js: string; var r: jsValue): boolean; overload;
 
-      /// <summary>
-      /// 执行js并得到string返回值
-      /// </summary>
+    /// <summary>
+    /// 执行js并得到string返回值
+    /// </summary>
     function GetJsTextResult(const js: string): string;
-      /// <summary>
-      /// 执行js并得到boolean返回值
-      /// </summary>
+    /// <summary>
+    /// 执行js并得到boolean返回值
+    /// </summary>
     function GetJsBoolResult(const js: string): boolean;
 
-      /// <summary>
-      /// 取webview 的DC
-      /// </summary>
+    /// <summary>
+    /// 取webview 的DC
+    /// </summary>
     function GetWebViewDC: HDC;
     procedure SetFocusToWebbrowser;
     procedure ShowDevTool;
-      /// <summary>
-      /// 取源码
-      /// </summary>
+    /// <summary>
+    /// 取源码
+    /// </summary>
     function GetSource: string;
 
-      /// <summary>
-      /// 模拟鼠标
-      /// </summary>
-      /// <param name=" msg">WM_MouseMove 等</param>
-      /// <param name=" x,y">坐标</param>
-      /// <param name=" flag">wke_lbutton 左键 、右键等 </param>
+    /// <summary>
+    /// 模拟鼠标
+    /// </summary>
+    /// <param name=" msg">WM_MouseMove 等</param>
+    /// <param name=" x,y">坐标</param>
+    /// <param name=" flag">wke_lbutton 左键 、右键等 </param>
     procedure MouseEvent(const msg: Cardinal; const x, y: Integer; const flag: Integer = WKE_LBUTTON);
-      /// <summary>
-      /// 模拟键盘
-      /// </summary>
-      /// <param name=" flag">WKE_REPEAT等</param>
+    /// <summary>
+    /// 模拟键盘
+    /// </summary>
+    /// <param name=" flag">WKE_REPEAT等</param>
     procedure KeyEvent(const vkcode: Integer; const flag: Integer = 0);
     procedure LoadCookies(const cks, Aurl: string);
     procedure SetDeviceParam(const keyname, keyvalue: string); overload;
     procedure SetDeviceParam(const keyname: string; const keyvalue: Integer); overload;
 
-      // -----------------------------------
+    // -----------------------------------
     property WebView: TwkeWebView read GetWebview;
     property WebViewHandle: Hwnd read GetWebHandle;
     property BoundsRect: Trect read GetBoundRect write SetBoundsRect;
@@ -201,6 +209,7 @@ type
     property Proxy: TwkeProxy read GetProxy write SetProxy;
     property HttpProxy: string write SetHttpProxy;
     property ZoomPercent: Integer read GetZoom write SetZoom;
+    property HDPISuport: boolean read GetHDPISuport write SetHDPISuport;
   published
     property Align;
     property Color;
@@ -216,8 +225,9 @@ type
     property TouchEnabled: boolean read GetTouchEnabled write SetTouchEnabled;
     property DragEnabled: boolean read GetDragEnabled write SetDragEnabled;
     property GlobalHttpProxy: string read GetGlobalHttpProxy write SetGlobalHttpProxy;
+    property Language: string read getLanguage write setLanguage;
 
-      // 事件
+    // 事件
     property OnAlertBox: TOnAlertBoxEvent read GetOnAlertBox write SetOnAlertBox;
     property OnBeforeLoad: TOnBeforeLoadEvent read GetOnLoadStart write SetOnLoadStart;
     property OnConfirmBox: TOnConfirmBoxEvent read GetOnConfirmBox write SetOnConfirmBox;
@@ -237,18 +247,19 @@ type
   end;
 
 implementation
-      uses Dialogs;
+
+uses Dialogs;
 { TWkeWebbrowser }
 
 procedure TWkeWebbrowser.CloseWebView;
 begin
-//
+  //
 end;
 
 constructor TWkeWebbrowser.Create(AOwner: TComponent);
 begin
   inherited;
-  FWkeCore := TWkeWebCore.Create(self);   
+  FWkeCore := TWkeWebCore.Create(self);
   with FWkeCore do
   begin
     OnTitleChange := DoWebTitleChange;
@@ -267,7 +278,7 @@ begin
     OnConsoleMessage := DoWebConsoleMessage;
     OnLoadUrlBegin := DoWebLoadUrlBegin;
     OnLoadUrlEnd := DoWebLoadUrlEnd;
-  end;          
+  end;
   FWkeCore.WindowType := WKE_WINDOW_TYPE_CONTROL;
 end;
 
@@ -283,7 +294,8 @@ begin
     FOnAlertBox(self, sMsg);
 end;
 
-procedure TWkeWebbrowser.DoWebBeforeLoad(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; var Cancel: boolean);
+procedure TWkeWebbrowser.DoWebBeforeLoad(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
+  var Cancel: boolean);
 begin
   if Assigned(FOnLoadStart) then
     FOnLoadStart(self, sUrl, navigationType, Cancel);
@@ -301,7 +313,8 @@ begin
     FOnConsoleMessage(self, sMsg, source, sline);
 end;
 
-procedure TWkeWebbrowser.DoWebCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
+procedure TWkeWebbrowser.DoWebCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
+  windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
 begin
   if Assigned(FOnCreateView) then
     FOnCreateView(self, sUrl, navigationType, windowFeatures, wvw);
@@ -343,17 +356,17 @@ begin
     FOnMouseOverUrlChange(self, sUrl);
 end;
 
-procedure TWkeWebbrowser.DoWebPromptBox(Sender: TObject; sMsg: string;var sValue:string; var bresult: boolean);
+procedure TWkeWebbrowser.DoWebPromptBox(Sender: TObject; sMsg: string; var sValue: string; var bresult: boolean);
 begin
   if Assigned(FOnPromptBox) then
-    FOnPromptBox(self, sMsg, svalue, bresult);
+    FOnPromptBox(self, sMsg, sValue, bresult);
 end;
 
 procedure TWkeWebbrowser.DoWebTitleChange(Sender: TObject; sTitle: string);
 begin
   if Assigned(FOnTitleChange) then
     FOnTitleChange(self, sTitle);
-  //showmessage(sTitle);
+  // showmessage(sTitle);
 end;
 
 procedure TWkeWebbrowser.DoWebUrlChange(Sender: TObject; sUrl: string);
@@ -481,6 +494,11 @@ begin
   Result := FWkeCore.GlobalHttpProxy;
 end;
 
+function TWkeWebbrowser.GetHDPISuport: boolean;
+begin
+  Result := FWkeCore.HDPISuport;
+end;
+
 function TWkeWebbrowser.GetHeadless: boolean;
 begin
   if FWkeCore <> nil then
@@ -497,6 +515,11 @@ function TWkeWebbrowser.GetJsTextResult(const js: string): string;
 begin
   if FWkeCore <> nil then
     Result := FWkeCore.GetJsTextResult(js);
+end;
+
+function TWkeWebbrowser.getLanguage: string;
+begin
+  Result := FWkeCore.Language;
 end;
 
 function TWkeWebbrowser.GetLoadFinished: boolean;
@@ -525,37 +548,37 @@ end;
 
 function TWkeWebbrowser.GetOnAlertBox: TOnAlertBoxEvent;
 begin
-  result := FOnAlertBox;
+  Result := FOnAlertBox;
 end;
 
 function TWkeWebbrowser.GetOnConfirmBox: TOnConfirmBoxEvent;
 begin
-  result := FOnConfirmBox;
+  Result := FOnConfirmBox;
 end;
 
 function TWkeWebbrowser.GetOnConsoleMessage: TOnConsoleMessgeEvent;
 begin
-  result := FOnConsoleMessage;
+  Result := FOnConsoleMessage;
 end;
 
 function TWkeWebbrowser.GetOnCreateView: TOnCreateViewEvent;
 begin
-  result := FOnCreateView;
+  Result := FOnCreateView;
 end;
 
 function TWkeWebbrowser.GetOnDocumentReady: TNotifyEvent;
 begin
-  result := FOnDocumentReady;
+  Result := FOnDocumentReady;
 end;
 
 function TWkeWebbrowser.GetOnDownload: TOnDownloadEvent;
 begin
-  result := FOnDownload;
+  Result := FOnDownload;
 end;
 
 function TWkeWebbrowser.GetOnLoadEnd: TOnLoadEndEvent;
 begin
-  result := FOnLoadEnd;
+  Result := FOnLoadEnd;
 end;
 
 function TWkeWebbrowser.GetOnLoadStart: TOnBeforeLoadEvent;
@@ -565,42 +588,42 @@ end;
 
 function TWkeWebbrowser.GetOnLoadUrlBegin: TOnLoadUrlBeginEvent;
 begin
-  result := FOnLoadUrlBegin;
+  Result := FOnLoadUrlBegin;
 end;
 
 function TWkeWebbrowser.GetOnLoadUrlEnd: TOnLoadUrlEndEvent;
 begin
-  result := FOnLoadUrlEnd;
+  Result := FOnLoadUrlEnd;
 end;
 
 function TWkeWebbrowser.GetOnMouseOverUrlChange: TOnUrlChangeEvent;
 begin
-  result := FOnMouseOverUrlChange;
+  Result := FOnMouseOverUrlChange;
 end;
 
 function TWkeWebbrowser.GetOnPromptBox: TOnPromptBoxEvent;
 begin
-  result := FOnPromptBox;
+  Result := FOnPromptBox;
 end;
 
 function TWkeWebbrowser.GetOnTitleChange: TOnTitleChangeEvent;
 begin
-  result := FOnTitleChange;
+  Result := FOnTitleChange;
 end;
 
 function TWkeWebbrowser.GetOnUrlChange: TOnUrlChangeEvent;
 begin
-  result := FOnUrlChange;
+  Result := FOnUrlChange;
 end;
 
 function TWkeWebbrowser.GetOnWindowClosing: TOnWindowClosingEvent;
 begin
-  result := FOnWindowClosing;
+  Result := FOnWindowClosing;
 end;
 
 function TWkeWebbrowser.GetOnWindowDestroy: TNotifyEvent;
 begin
-  result := FOnWindowDestroy;
+  Result := FOnWindowDestroy;
 end;
 
 function TWkeWebbrowser.GetPopupEnabled: boolean;
@@ -705,13 +728,12 @@ begin
     FWkeCore.LoadUrl(Aurl);
 end;
 
-procedure TWkeWebbrowser.PostUrl(const Aurl: string; const ApostData : String);
-begin
-  if FWkeCore <> nil then
-    FWkeCore.PostUrl(Aurl, ApostData);
-end;
-
-procedure TWkeWebbrowser.MouseEvent(const msg: Cardinal; const x, y, flag: Integer);
+procedure TWkeWebbrowser.PostUrl(const Aurl: string; const ApostData: string);
+begin
+  if FWkeCore <> nil then
+    FWkeCore.PostUrl(Aurl, ApostData);
+end;
+procedure TWkeWebbrowser.MouseEvent(const msg: Cardinal; const x, y, flag: Integer);
 begin
   if FWkeCore <> nil then
     FWkeCore.MouseEvent(msg, x, y, flag);
@@ -789,6 +811,11 @@ begin
     FWkeCore.GlobalHttpProxy := Value;
 end;
 
+procedure TWkeWebbrowser.SetHDPISuport(const Value: boolean);
+begin
+  FWkeCore.HDPISuport := Value;
+end;
+
 procedure TWkeWebbrowser.SetHeadless(const Value: boolean);
 begin
   if FWkeCore <> nil then
@@ -799,6 +826,11 @@ procedure TWkeWebbrowser.SetHttpProxy(const Value: string);
 begin
   if FWkeCore <> nil then
     FWkeCore.SetHttpProxy(Value);
+end;
+
+procedure TWkeWebbrowser.setLanguage(const Value: string);
+begin
+  FWkeCore.Language := Value;
 end;
 
 procedure TWkeWebbrowser.SetLocaStoragePath(const Value: string);
@@ -935,6 +967,11 @@ begin
     FWkeCore.Stop;
 end;
 
+procedure TWkeWebbrowser.VisitAllCookies;
+begin
+  FWkeCore.VisitAllCookies;
+end;
+
 procedure TWkeWebbrowser.WM_SIZE(var msg: TMessage);
 begin
   if FWkeCore <> nil then
@@ -954,7 +991,7 @@ begin
         inherited WndProc(msg);
       end;
     CM_WANTSPECIALKEY: // VK_RETURN,
-      if not (TWMKey(msg).CharCode in [VK_LEFT..VK_DOWN, VK_ESCAPE, VK_TAB]) then // 2018.07.26
+      if not(TWMKey(msg).CharCode in [VK_LEFT .. VK_DOWN, VK_ESCAPE, VK_TAB]) then // 2018.07.26
         msg.Result := 1
       else
         inherited WndProc(msg);
@@ -966,4 +1003,3 @@ begin
 end;
 
 end.
-

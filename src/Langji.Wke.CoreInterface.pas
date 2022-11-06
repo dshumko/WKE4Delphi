@@ -20,14 +20,17 @@ type
     procedure LoadFile(const AFile: string);
     procedure LoadHtml(const Astr: string);
     procedure LoadUrl(const Aurl: string);
-    procedure PostUrl(const Aurl: string; const ApostData : String);
+    procedure PostUrl(const Aurl: string; const ApostData: String);
     function GetSource: string;
     function GetJsBoolResult(const js: string): boolean;
     function GetJsTextResult(const js: string): string;
     procedure KeyEvent(const vkcode: Integer; const flag: Integer = 0);
     procedure MouseEvent(const msg: Cardinal; const x, y: Integer; const flag: Integer = WKE_LBUTTON);
+    procedure SetDeviceParam(const keyname, keyvalue: string); overload;
+    procedure SetDeviceParam(const keyname: string; const keyvalue: Integer); overload;
     function ExecuteJavascript(const js: string): boolean; overload;
     function ExecuteJavascript(const js: string; var r: jsValue): boolean; overload;
+    procedure VisitAllCookies;
     // 属性
     function GetBoundRect: Trect;
     function GetCanBack: boolean;
@@ -62,8 +65,7 @@ type
     procedure SetCookieDir(const Value: string);
     procedure SetCookieEnabled(const Value: boolean);
     procedure SetCspEnabled(const Value: boolean);
-    procedure SetDeviceParam(const keyname, keyvalue: string); overload;
-    procedure SetDeviceParam(const keyname: string; const keyvalue: Integer); overload;
+
     procedure SetDragEnabled(const Value: boolean);
     procedure SetGlobalHttpProxy(const Value: string);
     procedure SetHeadless(const Value: boolean);
@@ -92,6 +94,7 @@ type
     function GetOnUrlChange: TOnUrlChangeEvent;
     function GetOnWindowClosing: TOnWindowClosingEvent;
     function GetOnWindowDestroy: TNotifyEvent;
+    function GetHDPISuport: boolean;
     procedure SetOnAlertBox(const Value: TOnAlertBoxEvent);
     procedure SetOnConfirmBox(const Value: TOnConfirmBoxEvent);
     procedure SetOnConsoleMessage(const Value: TOnConsoleMessgeEvent);
@@ -109,6 +112,10 @@ type
     procedure SetOnWindowClosing(const Value: TOnWindowClosingEvent);
     procedure SetOnWindowDestroy(const Value: TNotifyEvent);
 
+    procedure setHDPISuport(const Value: boolean);
+    function getLanguage: string;
+    procedure setLanguage(const Value: string);
+
     // 不可视属性
     property BoundsRect: Trect read GetBoundRect write SetBoundsRect;
     property CanBack: boolean read GetCanBack;
@@ -123,6 +130,7 @@ type
     property WebViewHandle: Hwnd read GetWebHandle;
     property WindowType: wkeWindowType read GetWindowtype write SetWindowtype;
     property ZoomPercent: Integer read GetZoom write SetZoom;
+    property HDPISuport: boolean read GetHDPISuport write setHDPISuport;
     // 可视属性
     property Caption: string read GetCaption write SetCaption;
     property Cookie: string read GetCookie write SetCookie;
@@ -136,6 +144,7 @@ type
     property PopupEnabled: boolean read GetPopupEnabled write SetPopupEnabled;
     property TouchEnabled: boolean read GetTouchEnabled write SetTouchEnabled;
     property UserAgent: string read GetUserAgent write SetUserAgent;
+    property Language: string read getLanguage write setLanguage;
     // 事件
     property OnAlertBox: TOnAlertBoxEvent read GetOnAlertBox write SetOnAlertBox;
     property OnBeforeLoad: TOnBeforeLoadEvent read GetOnLoadStart write SetOnLoadStart;

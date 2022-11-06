@@ -40,8 +40,9 @@ type
     property LocalStoragePath;
     property PopupEnabled;
     property CspEnabled;
+    property Language;
     property Visible: boolean read FVisable write FVisable;
-   //事件
+    // 事件
     property OnTitleChange;
     property OnUrlChange;
     property OnBeforeLoad;
@@ -69,6 +70,7 @@ type
     destructor Destroy; override;
     procedure ShowWebPage;
     procedure ClosePage;
+    procedure HidePage;
     property WebView;
     property WebViewHandle;
     property BoundsRect;
@@ -92,7 +94,7 @@ type
     property LocalStoragePath;
     property PopupEnabled;
     property CspEnabled;
-   //事件
+    // 事件
     property OnTitleChange;
     property OnUrlChange;
     property OnBeforeLoad;
@@ -111,8 +113,8 @@ type
     property OnLoadUrlEnd;
   end;
 
-function WkeGetSourceFromUrl(const Aurl: string; const ADelay: Integer; const AShowWindow: boolean = false): string;
-
+function WkeGetSourceFromUrl(const Aurl, Auseragnet: string; const ADelay: Integer;
+  const AShowWindow: boolean = false): string;
 
 implementation
 
@@ -134,17 +136,16 @@ end;
 
 procedure TWkePopupPage.HidePage;
 begin
-  if Assigned(webview) and IsWindow(webviewhandle) then
-    showwindow(webviewhandle, SW_HIDE);
+  if Assigned(WebView) and IsWindow(WebViewHandle) then
+    showwindow(WebViewHandle, SW_HIDE);
 end;
 
 procedure TWkePopupPage.ShowWebPage;
 begin
-  if not IsWindow(webviewhandle) then
+  if not(Assigned(WebView) and IsWindow(WebViewHandle)) then
     CreateWebView;
-
-  if FVisable then
-    showwindow(webviewhandle, SW_NORMAL);
+  if (not Headless) and FVisable then
+    showwindow(WebViewHandle, SW_NORMAL);
 end;
 
 procedure TWkePopupPage.ClosePage;
@@ -155,7 +156,8 @@ begin
   end;
 end;
 
-function WkeGetSourceFromUrl(const Aurl: string; const ADelay: Integer; const AShowWindow: boolean = false): string;
+function WkeGetSourceFromUrl(const Aurl, Auseragnet: string; const ADelay: Integer;
+  const AShowWindow: boolean = false): string;
 var
   n: Integer;
 begin
@@ -165,8 +167,10 @@ begin
     try
       Headless := not AShowWindow;
       CreateWebView;
+      if Auseragnet <> '' then
+        UserAgent := Auseragnet;
       if AShowWindow then
-        showwindow(webviewhandle, SW_NORMAL);
+        showwindow(WebViewHandle, SW_NORMAL);
       LoadUrl(Aurl);
       while not DocumentReady do
       begin
@@ -178,7 +182,7 @@ begin
       end;
       Sleep(100);
       result := GetSource;
-      wkeDestroyWebWindow(webview);
+      wkeDestroyWebWindow(WebView);
     finally
       Free;
     end;
@@ -199,24 +203,27 @@ begin
   inherited;
 end;
 
+procedure TWkeTransparentPage.HidePage;
+begin
+  if Assigned(WebView) and IsWindow(WebViewHandle) then
+    showwindow(WebViewHandle, SW_HIDE);
+end;
+
 procedure TWkeTransparentPage.ShowWebPage;
 begin
-  if not IsWindow(webviewhandle) then
+  if not IsWindow(WebViewHandle) then
     CreateWebView;
-  showwindow(webviewhandle, SW_NORMAL);
+  showwindow(WebViewHandle, SW_NORMAL);
 end;
 
 procedure TWkeTransparentPage.ClosePage;
 begin
   try
-  CloseWebView;
-//    if Assigned(webview) and IsWindow(webviewhandle) then
-//      wkeDestroyWebWindow(webview);
+    CloseWebView;
+    // if Assigned(webview) and IsWindow(webviewhandle) then
+    // wkeDestroyWebWindow(webview);
   except
   end;
 end;
 
-
-
 end.
-

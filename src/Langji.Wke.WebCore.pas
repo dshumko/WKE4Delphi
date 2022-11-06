@@ -13,248 +13,255 @@ unit Langji.Wke.WebCore;
 interface
 
 uses
-  Langji.Wke.CoreInterface, Langji.Wke.lib, Langji.Wke.types, classes, controls, messages, windows;
+  Langji.Wke.CoreInterface, Langji.Wke.lib, Langji.Wke.types, classes, controls,
+  messages, windows;
 
 type
   TWkeWebCore = class(TComponent, IWkeCore)
-    private
-      FOwner               : TComponent;
-      theWebView           : TwkeWebView;
-      FWindowtype          : wkeWindowType;
-      FZoomValue           : Integer;
-      FCookieEnabled       : boolean;
-      FpopupEnabled        : boolean;
-      FCspEnabled          : boolean;
-      FHeadless            : boolean;
-      FTouchEnabled        : boolean;
-      FDragEnabled         : boolean;
-      FLoadFinished        : boolean;
-      FDocumentReady       : boolean;
-      FLocalStorageDir     : string;
-      FCookieDir           : string;
-      FUserAgent           : string;
-      FLanguage            : string;
-      FWindowTitle         : string;
-      FHttpProxy           : string;
-      FProxy               : wkeProxy;
-      FBoundsRect          : Trect;
-      FOnDocumentReady     : TNotifyEvent;
-      FOnLoadEnd           : TOnLoadEndEvent;
-      FOnTitleChange       : TOnTitleChangeEvent;
-      FOnLoadUrlBegin      : TOnLoadUrlBeginEvent;
-      FOnConsoleMessage    : TOnConsoleMessgeEvent;
-      FOnWindowClosing     : TOnWindowClosingEvent;
-      FOnMouseOverUrlChange: TOnUrlChangeEvent;
-      FOnCreateView        : TOnCreateViewEvent;
-      FOnLoadStart         : TOnBeforeLoadEvent;
-      FOnUrlChange         : TOnUrlChangeEvent;
-      FOnWindowDestroy     : TNotifyEvent;
-      FOnPromptBox         : TOnPromptBoxEvent;
-      FOnAlertBox          : TOnAlertBoxEvent;
-      FOnDownload          : TOnDownloadEvent;
-      FOnConfirmBox        : TOnConfirmBoxEvent;
-      FOnLoadUrlEnd        : TOnLoadUrlEndEvent;
-      function GetCaption: string;
-      procedure SetCaption(const Value: string);
-      function GetBoundRect: Trect;
-      procedure SetBoundsRect(const Value: Trect);
-      function GetCanBack: boolean;
-      function GetCanForward: boolean;
-      function GetLocationTitle: string;
-      function GetLocationUrl: string;
-      function GetLoadFinished: boolean;
-      function GetWebHandle: Hwnd;
-      /// <summary>
-      /// 格式为：PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
-      /// </summary>
-      procedure SetCookie(const Value: string);
-      function GetCookie: string;
-      procedure SetLocaStoragePath(const Value: string);
-      function GetHeadless: boolean;
-      procedure SetHeadless(const Value: boolean);
-      function GetTouchEnabled: boolean;
-      procedure SetTouchEnabled(const Value: boolean);
-      function GetProxy: TwkeProxy;
-      procedure SetProxy(const Value: TwkeProxy);
-      function GetDragEnabled: boolean;
-      procedure SetDragEnabled(const Value: boolean);
-      procedure SetPopupEnabled(const Value: boolean);
-      function GetContentHeight: Integer;
-      function GetContentWidth: Integer;
-      procedure setUserAgent(const Value: string);
-      procedure SetCspEnabled(const Value: boolean);
-      function GetZoom: Integer;
-      procedure SetZoom(const Value: Integer);
-      function GetWebview: TwkeWebView;
-      function GetWindowtype: wkeWindowType;
-      procedure SetWindowtype(Value: wkeWindowType);
-      function GetDocumentReady: boolean;
-      function GetCookieDir: string;
-      function GetCookieEnabled: boolean;
-      function GetCspEnabled: boolean;
-      function GetLocalStoragePath: string;
-      function GetPopupEnabled: boolean;
-      function GetUserAgent: string;
-      procedure SetCookieDir(const Value: string);
-      procedure SetCookieEnabled(const Value: boolean);
-      procedure SetHttpProxy(const Value: string);
-      function GetGlobalHttpProxy: string;
-      procedure SetGlobalHttpProxy(const Value: string);
-      procedure DoWebViewTitleChange(Sender: TObject; const sTitle: string);
-      procedure DoWebViewUrlChange(Sender: TObject; const sUrl: string);
-      procedure DoWebViewMouseOverUrlChange(Sender: TObject; sUrl: string);
-      procedure DoWebViewLoadStart(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
-        var Cancel: boolean);
-      procedure DoWebViewLoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
-      procedure DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
-        windowFeatures: PwkeWindowFeatures; var wvw: Pointer);
-      procedure DoWebViewAlertBox(Sender: TObject; smsg: string);
-      function DoWebViewConfirmBox(Sender: TObject; smsg: string): boolean;
-      function DoWebViewPromptBox(Sender: TObject; smsg:string; var Strres: string): boolean;
-      procedure DoWebViewConsoleMessage(Sender: TObject; const AMessage, sourceName: string; sourceLine: Cardinal;
-        const stackTrack: string);
-      procedure DoWebViewDocumentReady(Sender: TObject);
-      procedure DoWebViewWindowClosing(Sender: TObject; var bclose: boolean);
-      procedure DoWebViewWindowDestroy(Sender: TObject);
-      function DoWebViewDownloadFile(Sender: TObject; sUrl: string): boolean;
-      procedure DoWebViewLoadUrlEnd(Sender: TObject; sUrl: string; job: Pointer; buf: Pointer; len: Integer);
-      procedure DoWebViewLoadUrlStart(Sender: TObject; sUrl: string; out bhook, bHandle: boolean);
-      function GetOnAlertBox: TOnAlertBoxEvent;
-      function GetOnConfirmBox: TOnConfirmBoxEvent;
-      function GetOnConsoleMessage: TOnConsoleMessgeEvent;
-      function GetOnCreateView: TOnCreateViewEvent;
-      function GetOnDocumentReady: TNotifyEvent;
-      function GetOnDownload: TOnDownloadEvent;
-      function GetOnLoadEnd: TOnLoadEndEvent;
-      function GetOnLoadStart: TOnBeforeLoadEvent;
-      function GetOnLoadUrlBegin: TOnLoadUrlBeginEvent;
-      function GetOnLoadUrlEnd: TOnLoadUrlEndEvent;
-      function GetOnMouseOverUrlChange: TOnUrlChangeEvent;
-      function GetOnPromptBox: TOnPromptBoxEvent;
-      function GetOnTitleChange: TOnTitleChangeEvent;
-      function GetOnUrlChange: TOnUrlChangeEvent;
-      function GetOnWindowClosing: TOnWindowClosingEvent;
-      function GetOnWindowDestroy: TNotifyEvent;
-      procedure SetOnAlertBox(const Value: TOnAlertBoxEvent);
-      procedure SetOnConfirmBox(const Value: TOnConfirmBoxEvent);
-      procedure SetOnConsoleMessage(const Value: TOnConsoleMessgeEvent);
-      procedure SetOnCreateView(const Value: TOnCreateViewEvent);
-      procedure SetOnDocumentReady(const Value: TNotifyEvent);
-      procedure SetOnDownload(const Value: TOnDownloadEvent);
-      procedure SetOnLoadEnd(const Value: TOnLoadEndEvent);
-      procedure SetOnLoadStart(const Value: TOnBeforeLoadEvent);
-      procedure SetOnLoadUrlBegin(const Value: TOnLoadUrlBeginEvent);
-      procedure SetOnLoadUrlEnd(const Value: TOnLoadUrlEndEvent);
-      procedure SetOnMouseOverUrlChange(const Value: TOnUrlChangeEvent);
-      procedure SetOnPromptBox(const Value: TOnPromptBoxEvent);
-      procedure SetOnTitleChange(const Value: TOnTitleChangeEvent);
-      procedure SetOnUrlChange(const Value: TOnUrlChangeEvent);
-      procedure SetOnWindowClosing(const Value: TOnWindowClosingEvent);
-      procedure SetOnWindowDestroy(const Value: TNotifyEvent);
-    public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-      procedure CreateWebView;
-      procedure GoBack;
-      procedure GoForward;
-      procedure Refresh;
-      procedure Stop;
-      procedure CloseWebView;
-      procedure PostUrl(const Aurl: string; const ApostData : string);
-      procedure LoadUrl(const Aurl: string);
-      /// <summary>
-      /// 加载HTMLCODE
-      /// </summary>
-      procedure LoadHtml(const Astr: string);
-      /// <summary>
-      /// 加载文件
-      /// </summary>
-      procedure LoadFile(const AFile: string);
-      /// <summary>
-      /// 执行js 返回值 为执行成功与否
-      /// </summary>
-      function ExecuteJavascript(const js: string): boolean; overload;
-      function ExecuteJavascript(const js: string; var r: jsValue): boolean; overload;
+  private
+    FOwner: TComponent;
+    theWebView: TwkeWebView;
+    FWindowtype: wkeWindowType;
+    FZoomValue: Integer;
+    FCookieEnabled: boolean;
+    FpopupEnabled: boolean;
+    FCspEnabled: boolean;
+    FHeadless: boolean;
+    FTouchEnabled: boolean;
+    FDragEnabled: boolean;
+    FLoadFinished: boolean;
+    FDocumentReady: boolean;
+    FLocalStorageDir: string;
+    FCookieDir: string;
+    FUserAgent: string;
+    FWindowTitle: string;
+    FHttpProxy: string;
+    FLanguage: string;
+    FHDPISuport: boolean;
+    FProxy: wkeProxy;
+    FBoundsRect: Trect;
+    FOnDocumentReady: TNotifyEvent;
+    FOnLoadEnd: TOnLoadEndEvent;
+    FOnTitleChange: TOnTitleChangeEvent;
+    FOnLoadUrlBegin: TOnLoadUrlBeginEvent;
+    FOnConsoleMessage: TOnConsoleMessgeEvent;
+    FOnWindowClosing: TOnWindowClosingEvent;
+    FOnMouseOverUrlChange: TOnUrlChangeEvent;
+    FOnCreateView: TOnCreateViewEvent;
+    FOnLoadStart: TOnBeforeLoadEvent;
+    FOnUrlChange: TOnUrlChangeEvent;
+    FOnWindowDestroy: TNotifyEvent;
+    FOnPromptBox: TOnPromptBoxEvent;
+    FOnAlertBox: TOnAlertBoxEvent;
+    FOnDownload: TOnDownloadEvent;
+    FOnConfirmBox: TOnConfirmBoxEvent;
+    FOnLoadUrlEnd: TOnLoadUrlEndEvent;
+    function GetCaption: string;
+    procedure SetCaption(const Value: string);
+    function GetBoundRect: Trect;
+    procedure SetBoundsRect(const Value: Trect);
+    function GetCanBack: boolean;
+    function GetCanForward: boolean;
+    function GetLocationTitle: string;
+    function GetLocationUrl: string;
+    function GetLoadFinished: boolean;
+    function GetWebHandle: Hwnd;
+    /// <summary>
+    /// 格式为：PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
+    /// </summary>
+    procedure SetCookie(const Value: string);
+    function GetCookie: string;
+    procedure SetLocaStoragePath(const Value: string);
+    function GetHeadless: boolean;
+    procedure SetHeadless(const Value: boolean);
+    function GetTouchEnabled: boolean;
+    procedure SetTouchEnabled(const Value: boolean);
+    function GetProxy: TwkeProxy;
+    procedure SetProxy(const Value: TwkeProxy);
+    function GetDragEnabled: boolean;
+    procedure SetDragEnabled(const Value: boolean);
+    procedure SetPopupEnabled(const Value: boolean);
+    function GetContentHeight: Integer;
+    function GetContentWidth: Integer;
+    procedure setUserAgent(const Value: string);
+    procedure SetCspEnabled(const Value: boolean);
+    function GetZoom: Integer;
+    procedure SetZoom(const Value: Integer);
+    function GetWebview: TwkeWebView;
+    function GetWindowtype: wkeWindowType;
+    procedure SetWindowtype(Value: wkeWindowType);
+    function GetDocumentReady: boolean;
+    function GetCookieDir: string;
+    function GetCookieEnabled: boolean;
+    function GetCspEnabled: boolean;
+    function GetLocalStoragePath: string;
+    function GetPopupEnabled: boolean;
+    function GetUserAgent: string;
+    procedure SetCookieDir(const Value: string);
+    procedure SetCookieEnabled(const Value: boolean);
+    procedure SetHttpProxy(const Value: string);
+    function GetGlobalHttpProxy: string;
+    procedure SetGlobalHttpProxy(const Value: string);
+    procedure DoWebViewTitleChange(Sender: TObject; const sTitle: string);
+    procedure DoWebViewUrlChange(Sender: TObject; const sUrl: string);
+    procedure DoWebViewMouseOverUrlChange(Sender: TObject; sUrl: string);
+    procedure DoWebViewLoadStart(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; var Cancel: boolean);
+    procedure DoWebViewLoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
+    procedure DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
+      windowFeatures: PwkeWindowFeatures; var wvw: Pointer);
+    procedure DoWebViewAlertBox(Sender: TObject; smsg: string);
+    function DoWebViewConfirmBox(Sender: TObject; smsg: string): boolean;
+    function DoWebViewPromptBox(Sender: TObject; smsg: string; var Strres: string): boolean;
+    procedure DoWebViewConsoleMessage(Sender: TObject; const AMessage, sourceName: string; sourceLine: Cardinal;
+      const stackTrack: string);
+    procedure DoWebViewDocumentReady(Sender: TObject);
+    procedure DoWebViewWindowClosing(Sender: TObject; var bclose: boolean);
+    procedure DoWebViewWindowDestroy(Sender: TObject);
+    function DoWebViewDownloadFile(Sender: TObject; sUrl: string): boolean;
+    procedure DoWebViewLoadUrlEnd(Sender: TObject; sUrl: string; job: Pointer; buf: Pointer; len: Integer);
+    procedure DoWebViewLoadUrlStart(Sender: TObject; sUrl: string; out bhook, bHandle: boolean);
+    function GetOnAlertBox: TOnAlertBoxEvent;
+    function GetOnConfirmBox: TOnConfirmBoxEvent;
+    function GetOnConsoleMessage: TOnConsoleMessgeEvent;
+    function GetOnCreateView: TOnCreateViewEvent;
+    function GetOnDocumentReady: TNotifyEvent;
+    function GetOnDownload: TOnDownloadEvent;
+    function GetOnLoadEnd: TOnLoadEndEvent;
+    function GetOnLoadStart: TOnBeforeLoadEvent;
+    function GetOnLoadUrlBegin: TOnLoadUrlBeginEvent;
+    function GetOnLoadUrlEnd: TOnLoadUrlEndEvent;
+    function GetOnMouseOverUrlChange: TOnUrlChangeEvent;
+    function GetOnPromptBox: TOnPromptBoxEvent;
+    function GetOnTitleChange: TOnTitleChangeEvent;
+    function GetOnUrlChange: TOnUrlChangeEvent;
+    function GetOnWindowClosing: TOnWindowClosingEvent;
+    function GetOnWindowDestroy: TNotifyEvent;
+    procedure SetOnAlertBox(const Value: TOnAlertBoxEvent);
+    procedure SetOnConfirmBox(const Value: TOnConfirmBoxEvent);
+    procedure SetOnConsoleMessage(const Value: TOnConsoleMessgeEvent);
+    procedure SetOnCreateView(const Value: TOnCreateViewEvent);
+    procedure SetOnDocumentReady(const Value: TNotifyEvent);
+    procedure SetOnDownload(const Value: TOnDownloadEvent);
+    procedure SetOnLoadEnd(const Value: TOnLoadEndEvent);
+    procedure SetOnLoadStart(const Value: TOnBeforeLoadEvent);
+    procedure SetOnLoadUrlBegin(const Value: TOnLoadUrlBeginEvent);
+    procedure SetOnLoadUrlEnd(const Value: TOnLoadUrlEndEvent);
+    procedure SetOnMouseOverUrlChange(const Value: TOnUrlChangeEvent);
+    procedure SetOnPromptBox(const Value: TOnPromptBoxEvent);
+    procedure SetOnTitleChange(const Value: TOnTitleChangeEvent);
+    procedure SetOnUrlChange(const Value: TOnUrlChangeEvent);
+    procedure SetOnWindowClosing(const Value: TOnWindowClosingEvent);
+    procedure SetOnWindowDestroy(const Value: TNotifyEvent);
+    function GetHDPISuport: boolean;
+    procedure setHDPISuport(const Value: boolean);
+    function getLanguage: string;
+    procedure setLanguage(const Value: string);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure CreateWebView;
+    procedure GoBack;
+    procedure GoForward;
+    procedure Refresh;
+    procedure Stop;
+    procedure CloseWebView;
+    procedure PostUrl(const Aurl: string; const ApostData: string);
+    procedure LoadUrl(const Aurl: string);
+    /// <summary>
+    /// 加载HTMLCODE
+    /// </summary>
+    procedure LoadHtml(const Astr: string);
+    /// <summary>
+    /// 加载文件
+    /// </summary>
+    procedure LoadFile(const AFile: string);
+    /// <summary>
+    /// 执行js 返回值 为执行成功与否
+    /// </summary>
+    function ExecuteJavascript(const js: string): boolean; overload;
+    function ExecuteJavascript(const js: string; var r: jsValue): boolean; overload;
 
-      /// <summary>
-      /// 执行js并得到string返回值
-      /// </summary>
-      function GetJsTextResult(const js: string): string;
-      /// <summary>
-      /// 执行js并得到boolean返回值
-      /// </summary>
-      function GetJsBoolResult(const js: string): boolean;
+    /// <summary>
+    /// 执行js并得到string返回值
+    /// </summary>
+    function GetJsTextResult(const js: string): string;
+    /// <summary>
+    /// 执行js并得到boolean返回值
+    /// </summary>
+    function GetJsBoolResult(const js: string): boolean;
 
-      /// <summary>
-      /// 取webview 的DC
-      /// </summary>
-      function GetWebViewDC: HDC;
-      procedure SetFocusToWebbrowser;
-      procedure ShowDevTool;
-      /// <summary>
-      /// 取源码
-      /// </summary>
-      function GetSource: string;
+    /// <summary>
+    /// 取webview 的DC
+    /// </summary>
+    function GetWebViewDC: HDC;
+    procedure SetFocusToWebbrowser;
+    procedure ShowDevTool;
+    /// <summary>
+    /// 取源码
+    /// </summary>
+    function GetSource: string;
 
-      /// <summary>
-      /// 模拟鼠标
-      /// </summary>
-      /// <param name=" msg">WM_MouseMove 等</param>
-      /// <param name=" x,y">坐标</param>
-      /// <param name=" flag">wke_lbutton 左键 、右键等 </param>
-      procedure MouseEvent(const msg: Cardinal; const x, y: Integer; const flag: Integer = WKE_LBUTTON);
-      /// <summary>
-      /// 模拟键盘
-      /// </summary>
-      /// <param name=" flag">WKE_REPEAT等</param>
-      procedure KeyEvent(const vkcode: Integer; const flag: Integer = 0);
-      procedure LoadCookies(const cks, Aurl: string);
-      procedure SetDeviceParam(const keyname, keyvalue: string); overload;
-      procedure SetDeviceParam(const keyname: string; const keyvalue: Integer); overload;
-      // -----------------------------------
-      property WebView: TwkeWebView read GetWebview;
-      property WebViewHandle: Hwnd read GetWebHandle;
-      property WindowType: wkeWindowType read GetWindowtype write SetWindowtype;
-      property Caption: string read GetCaption write SetCaption;
-      property UserAgent: string read GetUserAgent write setUserAgent;
-      property CookieEnabled: boolean read GetCookieEnabled write SetCookieEnabled default true;
-      property CookiePath: string read GetCookieDir write SetCookieDir;
-      property LocalStoragePath: string read GetLocalStoragePath write SetLocaStoragePath;
-      property PopupEnabled: boolean read GetPopupEnabled write SetPopupEnabled default true;
-      property CspEnabled: boolean read GetCspEnabled write SetCspEnabled default false;
-      property BoundsRect: Trect read GetBoundRect write SetBoundsRect;
-      property CanBack: boolean read GetCanBack;
-      property CanForward: boolean read GetCanForward;
-      property LocationUrl: string read GetLocationUrl;
-      property LocationTitle: string read GetLocationTitle;
-      property LoadFinished: boolean read GetLoadFinished; // 加载完成
-      property DocumentReady: boolean read GetDocumentReady;
-      property Cookie: string read GetCookie write SetCookie;
-      property Proxy: TwkeProxy read GetProxy write SetProxy;
-      property HttpProxy: string write SetHttpProxy;
-      property GlobalHttpProxy: string read GetGlobalHttpProxy write SetGlobalHttpProxy;
-      property ZoomPercent: Integer read GetZoom write SetZoom;
-      property Headless: boolean read GetHeadless write SetHeadless;
-      property TouchEnabled: boolean read GetTouchEnabled write SetTouchEnabled;
-      property DragEnabled: boolean read GetDragEnabled write SetDragEnabled;
-
-      // 事件
-      property OnAlertBox: TOnAlertBoxEvent read GetOnAlertBox write SetOnAlertBox;
-      property OnBeforeLoad: TOnBeforeLoadEvent read GetOnLoadStart write SetOnLoadStart;
-      property OnConfirmBox: TOnConfirmBoxEvent read GetOnConfirmBox write SetOnConfirmBox;
-      property OnConsoleMessage: TOnConsoleMessgeEvent read GetOnConsoleMessage write SetOnConsoleMessage;
-      property OnCreateView: TOnCreateViewEvent read GetOnCreateView write SetOnCreateView;
-      property OnDocumentReady: TNotifyEvent read GetOnDocumentReady write SetOnDocumentReady;
-      property OnDownloadFile: TOnDownloadEvent read GetOnDownload write SetOnDownload;
-      property OnLoadEnd: TOnLoadEndEvent read GetOnLoadEnd write SetOnLoadEnd;
-      property OnLoadUrlBegin: TOnLoadUrlBeginEvent read GetOnLoadUrlBegin write SetOnLoadUrlBegin;
-      property OnLoadUrlEnd: TOnLoadUrlEndEvent read GetOnLoadUrlEnd write SetOnLoadUrlEnd;
-      property OnMouseOverUrlChanged: TOnUrlChangeEvent read GetOnMouseOverUrlChange write SetOnMouseOverUrlChange;
-      property OnPromptBox: TOnPromptBoxEvent read GetOnPromptBox write SetOnPromptBox;
-      property OnTitleChange: TOnTitleChangeEvent read GetOnTitleChange write SetOnTitleChange;
-      property OnUrlChange: TOnUrlChangeEvent read GetOnUrlChange write SetOnUrlChange;
-      property OnWindowClosing: TOnWindowClosingEvent read GetOnWindowClosing write SetOnWindowClosing;
-      property OnWindowDestroy: TNotifyEvent read GetOnWindowDestroy write SetOnWindowDestroy;
+    /// <summary>
+    /// 模拟鼠标
+    /// </summary>
+    /// <param name=" msg">WM_MouseMove 等</param>
+    /// <param name=" x,y">坐标</param>
+    /// <param name=" flag">wke_lbutton 左键 、右键等 </param>
+    procedure MouseEvent(const msg: Cardinal; const x, y: Integer; const flag: Integer = WKE_LBUTTON);
+    /// <summary>
+    /// 模拟键盘
+    /// </summary>
+    /// <param name=" flag">WKE_REPEAT等</param>
+    procedure KeyEvent(const vkcode: Integer; const flag: Integer = 0);
+    procedure LoadCookies(const cks, Aurl: string);
+    procedure SetDeviceParam(const keyname, keyvalue: string); overload;
+    procedure SetDeviceParam(const keyname: string; const keyvalue: Integer); overload;
+    procedure VisitAllCookies; // 20200729
+    // -----------------------------------
+    property WebView: TwkeWebView read GetWebview;
+    property WebViewHandle: Hwnd read GetWebHandle;
+    property WindowType: wkeWindowType read GetWindowtype write SetWindowtype;
+    property Caption: string read GetCaption write SetCaption;
+    property UserAgent: string read GetUserAgent write setUserAgent;
+    property CookieEnabled: boolean read GetCookieEnabled write SetCookieEnabled default true;
+    property CookiePath: string read GetCookieDir write SetCookieDir;
+    property LocalStoragePath: string read GetLocalStoragePath write SetLocaStoragePath;
+    property PopupEnabled: boolean read GetPopupEnabled write SetPopupEnabled default true;
+    property CspEnabled: boolean read GetCspEnabled write SetCspEnabled default false;
+    property BoundsRect: Trect read GetBoundRect write SetBoundsRect;
+    property CanBack: boolean read GetCanBack;
+    property CanForward: boolean read GetCanForward;
+    property LocationUrl: string read GetLocationUrl;
+    property LocationTitle: string read GetLocationTitle;
+    property LoadFinished: boolean read GetLoadFinished; // 加载完成
+    property DocumentReady: boolean read GetDocumentReady;
+    property Cookie: string read GetCookie write SetCookie;
+    property Proxy: TwkeProxy read GetProxy write SetProxy;
+    property HttpProxy: string write SetHttpProxy;
+    property GlobalHttpProxy: string read GetGlobalHttpProxy write SetGlobalHttpProxy;
+    property ZoomPercent: Integer read GetZoom write SetZoom;
+    property Headless: boolean read GetHeadless write SetHeadless;
+    property TouchEnabled: boolean read GetTouchEnabled write SetTouchEnabled;
+    property DragEnabled: boolean read GetDragEnabled write SetDragEnabled;
+    property HDPISuport: boolean read GetHDPISuport write setHDPISuport;
+    property Language: string read getLanguage write setLanguage;
+    // 事件
+    property OnAlertBox: TOnAlertBoxEvent read GetOnAlertBox write SetOnAlertBox;
+    property OnBeforeLoad: TOnBeforeLoadEvent read GetOnLoadStart write SetOnLoadStart;
+    property OnConfirmBox: TOnConfirmBoxEvent read GetOnConfirmBox write SetOnConfirmBox;
+    property OnConsoleMessage: TOnConsoleMessgeEvent read GetOnConsoleMessage write SetOnConsoleMessage;
+    property OnCreateView: TOnCreateViewEvent read GetOnCreateView write SetOnCreateView;
+    property OnDocumentReady: TNotifyEvent read GetOnDocumentReady write SetOnDocumentReady;
+    property OnDownloadFile: TOnDownloadEvent read GetOnDownload write SetOnDownload;
+    property OnLoadEnd: TOnLoadEndEvent read GetOnLoadEnd write SetOnLoadEnd;
+    property OnLoadUrlBegin: TOnLoadUrlBeginEvent read GetOnLoadUrlBegin write SetOnLoadUrlBegin;
+    property OnLoadUrlEnd: TOnLoadUrlEndEvent read GetOnLoadUrlEnd write SetOnLoadUrlEnd;
+    property OnMouseOverUrlChanged: TOnUrlChangeEvent read GetOnMouseOverUrlChange write SetOnMouseOverUrlChange;
+    property OnPromptBox: TOnPromptBoxEvent read GetOnPromptBox write SetOnPromptBox;
+    property OnTitleChange: TOnTitleChangeEvent read GetOnTitleChange write SetOnTitleChange;
+    property OnUrlChange: TOnUrlChangeEvent read GetOnUrlChange write SetOnUrlChange;
+    property OnWindowClosing: TOnWindowClosingEvent read GetOnWindowClosing write SetOnWindowClosing;
+    property OnWindowDestroy: TNotifyEvent read GetOnWindowDestroy write SetOnWindowDestroy;
   end;
 
 implementation
@@ -275,7 +282,7 @@ var
 function DoGetSource(p1, p2, es: jsExecState): jsValue;
 begin
   tmpSource := Utf8ToAnsi(jsToTempString(es, jsArg(es, 0)));
-  result    := 0;
+  result := 0;
 end;
 
 procedure doDucumentReadyCallback(WebView: wkeWebView; param: Pointer; frameid: wkeFrameHwnd); cdecl;
@@ -349,15 +356,16 @@ end;
 
 function DoPromptBox(WebView: wkeWebView; param: Pointer; msg: wkeString; defaultResult: wkeString; sresult: wkeString)
   : boolean; cdecl;
-  var svalue:string;
-    s:AnsiString;
+var
+  svalue: string;
+  s: AnsiString;
 begin
-  svalue :=  WkeStringtoString(defaultResult)  ;
-  result := TWkeWebCore(param).DoWebViewPromptBox(TWkeWebCore(param), WkeStringtoString(msg),       svalue);
-  if Result then
+  svalue := WkeStringtoString(defaultResult);
+  result := TWkeWebCore(param).DoWebViewPromptBox(TWkeWebCore(param), WkeStringtoString(msg), svalue);
+  if result then
   begin
-    s:=AnsiString(UTF8Encode(svalue));
-    wkeSetString( sresult ,  PAnsiChar( s) ,strlen(PAnsiChar(s)));
+    s := AnsiString(UTF8Encode(svalue));
+    wkeSetString(sresult, PAnsiChar(s), strlen(PAnsiChar(s)));
   end;
 
 end;
@@ -385,30 +393,29 @@ begin
   TWkeWebCore(param).DoWebViewWindowDestroy(TWkeWebCore(param));
 end;
 
-function DodownloadFile(WebView: wkeWebView; param: Pointer; url: PansiChar): boolean; cdecl;
+function DodownloadFile(WebView: wkeWebView; param: Pointer; url: PAnsiChar): boolean; cdecl;
 begin
   result := TWkeWebCore(param).DoWebViewDownloadFile(TWkeWebCore(param), StrPas(url));
 end;
 
-procedure DoOnLoadUrlEnd(WebView: wkeWebView; param: Pointer; const url: PansiChar; job: Pointer; buf: Pointer;
+procedure DoOnLoadUrlEnd(WebView: wkeWebView; param: Pointer; const url: PAnsiChar; job: Pointer; buf: Pointer;
   len: Integer); cdecl;
 begin
   TWkeWebCore(param).DoWebViewLoadUrlEnd(TWkeWebCore(param), StrPas(url), job, buf, len);
 end;
 
-function DoOnLoadUrlBegin(WebView: wkeWebView; param: Pointer; url: PansiChar; job: Pointer): boolean; cdecl;
+function DoOnLoadUrlBegin(WebView: wkeWebView; param: Pointer; url: PAnsiChar; job: Pointer): boolean; cdecl;
 var
   bhook, bHandled: boolean;
 begin
-   wkeNetSetHTTPHeaderField(job, PwideChar('Accept-Language'), PWideChar('en-us,en'), False);
-
-  bhook    := false;
+  // wkeNetSetHTTPHeaderField(job, PwideChar('Accept-Language'), PwideChar('ru-RU,ru'), false);
+  bhook := false;
   bHandled := false;
   TWkeWebCore(param).DoWebViewLoadUrlStart(TWkeWebCore(param), StrPas(url), bhook, bHandled);
   if bhook then
     if Assigned(wkeNetHookRequest) then
       wkeNetHookRequest(job);
-  if bHandled  then
+  if bHandled then
     wkeNetCancelRequest(job);
   result := bHandled;
 end;
@@ -423,44 +430,43 @@ end;
 
 procedure TWkeWebCore.CloseWebView;
 begin
-  if Assigned(thewebview) and IsWindow(webviewhandle) then
+  if Assigned(theWebView) and IsWindow(WebViewHandle) then
   begin
-
-// SendMessage( WebviewHandle ,WM_CLOSE,0,0   )  ;
+    // SendMessage( WebviewHandle ,WM_CLOSE,0,0   )  ;
     LoadUrl('about:blank');
-    if  Win32MajorVersion>7 then
-      wkeDestroyWebView(theWebView)      //win7会出错
+    if Win32MajorVersion > 7 then
+      wkeDestroyWebView(theWebView) // win7会出错
     else
-       CloseWindow( WebviewHandle )  ;     //win10关闭不了
+      CloseWindow(WebViewHandle); // win10关闭不了
   end;
-  theWebView :=nil;
+  theWebView := nil;
 end;
 
 constructor TWkeWebCore.Create(AOwner: TComponent);
-var
-  i: TComponentState;
-  // x:TCOMState;
+// var
+//   i: TComponentState;
+//   x:TCOMState;
 begin
   inherited;
-  FOwner           := AOwner;
-  theWebView       := nil;
-  FWindowtype      := WKE_WINDOW_TYPE_POPUP;
-  FZoomValue       := 100;
-  FCookieEnabled   := true;
-  FpopupEnabled    := true;
-  FCspEnabled      := false;
-  FDocumentReady   := false;
-  FHeadless        := false;
-  FTouchEnabled    := false;
-  FDragEnabled     := false;
-  FLoadFinished    := false;
-  FDocumentReady   := false;
+  FOwner := AOwner;
+  theWebView := nil;
+  FWindowtype := WKE_WINDOW_TYPE_POPUP;
+  FZoomValue := 100;
+  FCookieEnabled := true;
+  FpopupEnabled := true;
+  FCspEnabled := false;
+  FDocumentReady := false;
+  FHeadless := false;
+  FTouchEnabled := false;
+  FDragEnabled := false;
+  FLoadFinished := false;
+  FDocumentReady := false;
   FLocalStorageDir := '';
-  FCookieDir       := '';
-  FUserAgent       := wkeUserAgent;
-  FLanguage        := 'en-us,en';
-  FBoundsRect      := Rect(100, 50, 900, 650);
-
+  FCookieDir := '';
+  FUserAgent := wkeUserAgent;
+  FBoundsRect := Rect(100, 50, 900, 650);
+  FLanguage := 'ru-RU,ru';
+  FHDPISuport := true;
   if csDesigning in ComponentState then
     exit;
 
@@ -531,9 +537,8 @@ begin
 {$IFDEF UNICODE}
       wkeSetUserAgentw(theWebView, PChar(FUserAgent));
 {$ELSE}
-      wkeSetUserAgent(theWebView, PansiChar(AnsiString(FUserAgent)));
+      wkeSetUserAgent(theWebView, PAnsiChar(AnsiString(FUserAgent)));
 {$ENDIF}
-
     wkeSetCookieEnabled(theWebView, FCookieEnabled);
 
     if DirectoryExists(FCookieDir) and Assigned(wkeSetCookieJarPath) then
@@ -545,11 +550,15 @@ begin
 {$IFDEF UNICODE}
       wkeSetWindowTitleW(theWebView, PChar(FWindowTitle));
 {$ELSE}
-      wkeSetWindowTitle(theWebView, PansiChar(ansitoutf8(FWindowTitle)));
+      wkeSetWindowTitle(theWebView, PAnsiChar(ansitoutf8(FWindowTitle)));
 {$ENDIF}
     wkeSetNavigationToNewWindowEnable(theWebView, FpopupEnabled);
     wkeSetCspCheckEnable(theWebView, FCspEnabled); // 关闭跨域检查
+    if Assigned(theWebView) and (FLanguage <> '') then
+      wkeSetLanguage(theWebView, PAnsiChar(AnsiString(FLanguage)));
     jsBindFunction('GetSource', DoGetSource, 1);
+    if FHDPISuport then
+      wkeEnableHighDPISupport();
   end;
 end;
 
@@ -584,13 +593,17 @@ begin
     FOnCreateView(Self, sUrl, navigationType, windowFeatures, view);
     wvw := view;
   end;
+
   if not Assigned(wvw) then
   begin
+    // wvw := theWebView;
     wvw := wkeCreateWebWindow(WKE_WINDOW_TYPE_POPUP, 0, windowFeatures.x, windowFeatures.y, windowFeatures.Width,
       windowFeatures.height);
     wkeShowWindow(wvw, true);
     wkeSetWindowTitleW(wvw, PwideChar(sUrl));
-  end else begin
+  end
+  else
+  begin
     if wkeGetWindowHandle(wvw) = 0 then
       wvw := theWebView;
   end;
@@ -619,7 +632,7 @@ end;
 procedure TWkeWebCore.DoWebViewLoadStart(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
   var Cancel: boolean);
 begin
-  FLoadFinished  := false;
+  FLoadFinished := false;
   FDocumentReady := false;
   if Assigned(FOnLoadStart) then
     FOnLoadStart(Self, sUrl, navigationType, Cancel);
@@ -644,16 +657,16 @@ begin
     FOnMouseOverUrlChange(Self, sUrl);
 end;
 
-function TWkeWebCore.DoWebViewPromptBox(Sender: TObject; smsg:string; var Strres: string): boolean;
+function TWkeWebCore.DoWebViewPromptBox(Sender: TObject; smsg: string; var Strres: string): boolean;
 begin
   if Assigned(FOnPromptBox) then
-    FOnPromptBox(Self, smsg,  Strres, result);
+    FOnPromptBox(Self, smsg, Strres, result);
 end;
 
 procedure TWkeWebCore.DoWebViewTitleChange(Sender: TObject; const sTitle: string);
 begin
   if Assigned(FOnTitleChange) then
-    FOnTitleChange(Self, sTitle);   
+    FOnTitleChange(Self, sTitle);
 end;
 
 procedure TWkeWebCore.DoWebViewUrlChange(Sender: TObject; const sUrl: string);
@@ -680,14 +693,14 @@ end;
 function TWkeWebCore.ExecuteJavascript(const js: string): boolean;
 var
   newjs: AnsiString;
-  r    : jsValue;
-  es   : jsExecState;
+  r: jsValue;
+  es: jsExecState;
 begin
   result := false;
-  newjs  := 'try { ' + js + '; return 1; } catch(err){ return 0;}';
+  newjs := 'try { ' + js + '; return 1; } catch(err){ return 0;}';
   if Assigned(theWebView) then
   begin
-    r  := wkeRunJS(theWebView, PansiChar(ansitoutf8(newjs)));
+    r := wkeRunJS(theWebView, PAnsiChar(ansitoutf8(newjs)));
     es := wkeGlobalExec(theWebView);
     if jsIsNumber(r) then
     begin
@@ -700,26 +713,26 @@ end;
 function TWkeWebCore.ExecuteJavascript(const js: string; var r: jsValue): boolean;
 var
   newjs: AnsiString;
-  es   : jsExecState;
+  es: jsExecState;
 begin
   result := false;
-  newjs  := 'try { funtion(){' + js + '}();  } catch(err){ return null;}';
+  newjs := 'try { funtion(){' + js + '}();  } catch(err){ return null;}';
   if Assigned(theWebView) then
   begin
-    r      := wkeRunJS(theWebView, PansiChar(ansitoutf8(newjs)));
-    es     := wkeGlobalExec(theWebView);
+    r := wkeRunJS(theWebView, PAnsiChar(ansitoutf8(newjs)));
+    es := wkeGlobalExec(theWebView);
     result := not jsIsnull(r);
   end;
 end;
 
 function TWkeWebCore.GetJsBoolResult(const js: string): boolean;
 var
-  r : jsValue;
+  r: jsValue;
   es: jsExecState;
 begin
   if Assigned(theWebView) then
   begin
-    r  := wkeRunJS(theWebView, PansiChar(ansitoutf8(js)));
+    r := wkeRunJS(theWebView, PAnsiChar(ansitoutf8(js)));
     es := wkeGlobalExec(theWebView);
     if jsIsBoolean(r) then
       result := jsToBoolean(es, r);
@@ -728,17 +741,22 @@ end;
 
 function TWkeWebCore.GetJsTextResult(const js: string): string;
 var
-  r : jsValue;
+  r: jsValue;
   es: jsExecState;
 begin
   result := '';
   if Assigned(theWebView) then
   begin
-    r  := wkeRunJS(theWebView, PansiChar(ansitoutf8(js)));
+    r := wkeRunJS(theWebView, PAnsiChar(ansitoutf8(js)));
     es := wkeGlobalExec(theWebView);
     if jsIsString(r) then
       result := jsToTempString(es, r);
   end;
+end;
+
+function TWkeWebCore.getLanguage: string;
+begin
+  result := FLanguage;
 end;
 
 function TWkeWebCore.GetBoundRect: Trect;
@@ -807,7 +825,7 @@ function TWkeWebCore.GetCookieEnabled: boolean;
 begin
   if Assigned(theWebView) then
     FCookieEnabled := wkeIsCookieEnabled(theWebView);
-  result           := FCookieEnabled;
+  result := FCookieEnabled;
 end;
 
 function TWkeWebCore.GetCspEnabled: boolean;
@@ -828,6 +846,11 @@ end;
 function TWkeWebCore.GetGlobalHttpProxy: string;
 begin
   result := FHttpProxy;
+end;
+
+function TWkeWebCore.GetHDPISuport: boolean;
+begin
+  result := FHDPISuport;
 end;
 
 function TWkeWebCore.GetHeadless: boolean;
@@ -968,8 +991,12 @@ begin
   tmpSource := '';
   if Assigned(theWebView) then
   begin
-    ExecuteJavascript('GetSource(document.getElementsByTagName("html")[0].outerHTML);');
-    Sleep(100);
+    tmpSource := wkeGetSource(theWebView);
+    if tmpSource = '' then
+    begin
+      ExecuteJavascript('GetSource(document.getElementsByTagName("html")[0].outerHTML);');
+      Sleep(100);
+    end;
     result := tmpSource;
   end;
 end;
@@ -1056,11 +1083,11 @@ begin
     with TStringList.Create do
     begin
       try
-        Delimiter     := ';';
+        Delimiter := ';';
         DelimitedText := cks;
-        for i         := 0 to Count - 1 do
+        for i := 0 to Count - 1 do
         begin
-          wkeSetCookie(theWebView, PansiChar(ansitoutf8(Aurl)), PansiChar(ansitoutf8(Strings[i])));
+          wkeSetCookie(theWebView, PAnsiChar(ansitoutf8(Aurl)), PAnsiChar(ansitoutf8(Strings[i])));
         end;
       finally
         Free;
@@ -1077,7 +1104,7 @@ begin
 {$IFDEF UNICODE}
     wkeLoadFileW(theWebView, PChar(AFile));
 {$ELSE}
-    wkeLoadFile(theWebView, PansiChar(ansitoutf8(AFile)));
+    wkeLoadFile(theWebView, PAnsiChar(ansitoutf8(AFile)));
 {$ENDIF}
   end;
 end;
@@ -1089,7 +1116,7 @@ begin
 {$IFDEF UNICODE}
     wkeLoadHTMLw(theWebView, PChar(Astr));
 {$ELSE}
-    wkeLoadHTML(theWebView, PansiChar(ansitoutf8(Astr)));
+    wkeLoadHTML(theWebView, PAnsiChar(ansitoutf8(Astr)));
 {$ENDIF}
   end;
 end;
@@ -1101,8 +1128,9 @@ begin
 {$IFDEF UNICODE}
     wkeLoadURLw(theWebView, PChar(Aurl));
 {$ELSE}
-    wkeLoadURL(theWebView, PansiChar(ansitoutf8(Aurl)));
+    wkeLoadURL(theWebView, PAnsiChar(ansitoutf8(Aurl)));
 {$ENDIF}
+    // MoveWindow(GetWebHandle, 0, 0, Width, height, true);
   end;
 end;
 
@@ -1111,9 +1139,9 @@ begin
   if Assigned(theWebView) then
   begin
 {$IFDEF UNICODE}
-    wkePostURLW(theWebView, PChar(Aurl), PAnsiChar(AnsiString(APostData)) , ApostData.Length);
+    wkePostURLW(theWebView, PChar(Aurl), PAnsiChar(AnsiString(ApostData)), ApostData.Length);
 {$ELSE}
-    wkePostURL(theWebView, PChar(Aurl), PansiChar(ansitoutf8(ApostData)), strlen(PansiChar(ansitoutf8(ApostData))));
+    wkePostURL(theWebView, PChar(Aurl), PAnsiChar(ansitoutf8(ApostData)), strlen(PAnsiChar(ansitoutf8(ApostData))));
 {$ENDIF}
   end;
 end;
@@ -1144,14 +1172,14 @@ begin
 {$IFDEF UNICODE}
     wkeSetWindowTitleW(theWebView, PChar(Value));
 {$ELSE}
-    wkeSetWindowTitle(theWebView, PansiChar(ansitoutf8(Value)));
+    wkeSetWindowTitle(theWebView, PAnsiChar(ansitoutf8(Value)));
 {$ENDIF}
 end;
 
 procedure TWkeWebCore.SetCookie(const Value: string);
 begin
   if Assigned(theWebView) then
-    wkeSetCookie(theWebView, PansiChar(ansitoutf8(LocationUrl)), PansiChar(ansitoutf8(Value)));
+    wkeSetCookie(theWebView, PAnsiChar(ansitoutf8(LocationUrl)), PAnsiChar(ansitoutf8(Value)));
 end;
 
 procedure TWkeWebCore.SetCookieEnabled(const Value: boolean);
@@ -1171,13 +1199,13 @@ end;
 procedure TWkeWebCore.SetDeviceParam(const keyname: string; const keyvalue: Integer);
 begin
   if Assigned(theWebView) then
-    wkeSetDeviceParameter(theWebView, PansiChar(AnsiString(keyname)), '', keyvalue, 0.0);
+    wkeSetDeviceParameter(theWebView, PAnsiChar(AnsiString(keyname)), '', keyvalue, 0.0);
 end;
 
 procedure TWkeWebCore.SetDeviceParam(const keyname, keyvalue: string);
 begin
   if Assigned(theWebView) then
-    wkeSetDeviceParameter(theWebView, PansiChar(AnsiString(keyname)), PansiChar(AnsiString(keyvalue)), 0, 0.0);
+    wkeSetDeviceParameter(theWebView, PAnsiChar(AnsiString(keyname)), PAnsiChar(AnsiString(keyvalue)), 0, 0.0);
 end;
 
 procedure TWkeWebCore.SetDragEnabled(const Value: boolean);
@@ -1198,7 +1226,7 @@ end;
 
 procedure TWkeWebCore.SetGlobalHttpProxy(const Value: string);
 var
-  aproxy      : TwkeProxy;
+  aproxy: TwkeProxy;
   phost, pport: string;
 begin
 
@@ -1211,12 +1239,21 @@ begin
   begin
     AType := WKE_PROXY_HTTP;
     StrPCopy(hostname, AnsiString(phost));
-    port     := StrToIntDef(pport, 8080);
+    port := StrToIntDef(pport, 8080);
     username := '';
     password := '';
   end;
   if wkeisInit then
     wkeSetproxy(@aproxy);
+end;
+
+procedure TWkeWebCore.setHDPISuport(const Value: boolean);
+begin
+  FHDPISuport := Value;
+  // if FHDPISuport then
+  // wkeEnableHighDPISupport
+  // else
+  // setzoom(100);
 end;
 
 procedure TWkeWebCore.SetHeadless(const Value: boolean);
@@ -1228,7 +1265,7 @@ end;
 
 procedure TWkeWebCore.SetHttpProxy(const Value: string);
 var
-  aproxy      : TwkeProxy;
+  aproxy: TwkeProxy;
   phost, pport: string;
 begin
   if not(Pos(':', Value) > 0) then
@@ -1239,13 +1276,20 @@ begin
   begin
     AType := WKE_PROXY_HTTP;
     StrPCopy(hostname, AnsiString(phost));
-    port     := StrToIntDef(pport, 8080);
+    port := StrToIntDef(pport, 8080);
     username := '';
     password := '';
   end;
   if Assigned(theWebView) then
     wkeSetViewProxy(theWebView, @aproxy);
   // wkeSetproxy(@aproxy);
+end;
+
+procedure TWkeWebCore.setLanguage(const Value: string);
+begin
+  FLanguage := Value;
+  if Assigned(theWebView) and (Value <> '') then
+    wkeSetLanguage(theWebView, PAnsiChar(AnsiString(Value)));
 end;
 
 procedure TWkeWebCore.SetLocaStoragePath(const Value: string);
@@ -1367,7 +1411,7 @@ begin
 {$IFDEF UNICODE}
     wkeSetUserAgentw(theWebView, PChar(Value));
 {$ELSE}
-    wkeSetUserAgent(theWebView, PansiChar(AnsiString(Value)));
+    wkeSetUserAgent(theWebView, PAnsiChar(AnsiString(Value)));
 {$ENDIF}
   end;
 end;
@@ -1398,13 +1442,25 @@ procedure TWkeWebCore.ShowDevTool;
 begin
   if Assigned(theWebView) then
     wkeSetDebugConfig(theWebView, 'showDevTools',
-      PansiChar(ansitoutf8(ExtractFilePath(ParamStr(0)) + '\front_end\inspector.html')));
+      PAnsiChar(ansitoutf8(ExtractFilePath(ParamStr(0)) + '\front_end\inspector.html')));
 end;
 
 procedure TWkeWebCore.Stop;
 begin
   if Assigned(theWebView) then
     wkeStopLoading(theWebView);
+end;
+
+function listcookie(params: Pointer; const name, Value, domain, path: PAnsiChar; secure, httpOnly: Integer;
+  expires: PInteger): boolean; cdecl;
+begin
+  OutputDebugString(PChar(Format('%s=%s', [name, Value])));
+  result := true;
+end;
+
+procedure TWkeWebCore.VisitAllCookies;
+begin
+  wkeVisitAllCookie(theWebView, Self, listcookie);
 end;
 
 end.
